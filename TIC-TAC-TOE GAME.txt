@@ -1,0 +1,92 @@
+import java.util.Scanner;
+
+public class TicTacToe {
+
+    private static final char EMPTY = ' ';
+    private static final char PLAYER_X = 'X';
+    private static final char PLAYER_O = 'O';
+    private static char currentPlayer = PLAYER_X;
+    private static char[][] board = {
+        {EMPTY, EMPTY, EMPTY},
+        {EMPTY, EMPTY, EMPTY},
+        {EMPTY, EMPTY, EMPTY}
+    };
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean gameWon = false;
+
+        System.out.println("Welcome to Tic-Tac-Toe!");
+        printBoard();
+
+        while (!gameWon && !isBoardFull()) {
+            System.out.println("Player " + currentPlayer + ", enter your move (row and column): ");
+            int row = scanner.nextInt();
+            int col = scanner.nextInt();
+
+            if (isValidMove(row, col)) {
+                board[row][col] = currentPlayer;
+                printBoard();
+                gameWon = checkWin();
+
+                if (gameWon) {
+                    System.out.println("Player " + currentPlayer + " wins!");
+                } else {
+                    currentPlayer = (currentPlayer == PLAYER_X) ? PLAYER_O : PLAYER_X;
+                }
+            } else {
+                System.out.println("This move is not valid. Try again.");
+            }
+        }
+
+        if (!gameWon) {
+            System.out.println("The game is a draw!");
+        }
+        scanner.close();
+    }
+
+    private static void printBoard() {
+        System.out.println("  0 1 2");
+        for (int i = 0; i < 3; i++) {
+            System.out.print(i + " ");
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[i][j]);
+                if (j < 2) {
+                    System.out.print("|");
+                }
+            }
+            System.out.println();
+            if (i < 2) {
+                System.out.println("  -----");
+            }
+        }
+    }
+
+    private static boolean isValidMove(int row, int col) {
+        return row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == EMPTY;
+    }
+
+    private static boolean isBoardFull() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == EMPTY) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean checkWin() {
+        // Check rows and columns
+        for (int i = 0; i < 3; i++) {
+            if ((board[i][0] == currentPlayer && board[i][1] == currentPlayer && board[i][2] == currentPlayer) ||
+                (board[0][i] == currentPlayer && board[1][i] == currentPlayer && board[2][i] == currentPlayer)) {
+                return true;
+            }
+        }
+        // Check diagonals
+        return (board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == currentPlayer) ||
+               (board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == currentPlayer);
+    }
+}
